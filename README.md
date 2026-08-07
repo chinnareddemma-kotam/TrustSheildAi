@@ -79,22 +79,10 @@ npm run dev
 
 ---
 
-## 🎬 Recommended 8-Minute Demo Walkthrough Flow
-
-1. **Step 1: Landing Page**: Open landing page showcasing platform capabilities, metrics, and agent cards.
-2. **Step 2: Login as Seller**: Select **Seller** tab and click "Auto-fill Demo Credentials". Open "AI Listing Pre-Check" and submit a suspicious item (AirPods Pro at ₹2,999 vs ₹24,900 MSRP). Authenticity Agent flags listing as `HELD` with 98% counterfeit probability.
-3. **Step 3: Login as Customer**: Select **Customer** tab. Open "Simulate Checkout Risk Live" to test COD payment with high IP velocity. Risk Scoring Agent scores transaction 89 `UNDER_REVIEW`.
-4. **Step 4: Login as Admin**: Select **Admin** tab to view the dark enterprise ops console.
-5. **Step 5: View Agent Pages & Orchestrator**: Navigate to Risk Agent, Authenticity Agent, Review Moderation Agent (with review ring network graph), and AI Orchestrator.
-6. **Step 6: Perform Admin Override**: Open Case `CASE-784511`, enter mandatory override rationale, and click "Confirm Admin Override".
-7. **Step 7: Check Audit Trail**: Open Audit Trail tab to verify the cryptographically linked SHA-256 hash chain record of the human override.
-
----
-
 ## 🛡️ Security & Compliance
 - **Data Sovereignty**: All API responses output `X-TrustShield-Data-Sovereignty: Region: ap-south-1 (India VPC)`.
 - **Fairness & Guardrails**: Enforces equal false-positive rates for small/new vs established sellers.
 =======
 # TrustSheildAi
 TrustShieldAI is an AI-powered Trust &amp; Safety platform for online marketplaces. It uses multi-agent AI to detect transaction fraud, COD/return abuse, counterfeit products, and fake reviews. Risk, Authenticity, and Review agents provide real-time risk scoring, explainable decisions, verified-purchase protection, and secure audit trails at scale.
->>>>>>> 321d13fde3a9eeb798dcc48c81d9cba6f9c2552b
+>>>>>>>
