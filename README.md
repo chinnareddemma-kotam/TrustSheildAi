@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # TrustShield AI - AI-Powered Trust & Safety Marketplace Platform
 
 **TrustShield AI** is an enterprise-grade multi-role Trust & Safety e-commerce platform designed to defend online marketplaces against transaction fraud, return abuse, empty-box claims, COD doorstep refusal, counterfeit product listings, and fake review manipulation rings.
@@ -93,3 +94,7 @@ npm run dev
 ## 🛡️ Security & Compliance
 - **Data Sovereignty**: All API responses output `X-TrustShield-Data-Sovereignty: Region: ap-south-1 (India VPC)`.
 - **Fairness & Guardrails**: Enforces equal false-positive rates for small/new vs established sellers.
+=======
+# TrustSheildAi
+TrustShieldAI is an AI-powered Trust &amp; Safety platform for online marketplaces. It uses multi-agent AI to detect transaction fraud, COD/return abuse, counterfeit products, and fake reviews. Risk, Authenticity, and Review agents provide real-time risk scoring, explainable decisions, verified-purchase protection, and secure audit trails at scale.
+>>>>>>> 321d13fde3a9eeb798dcc48c81d9cba6f9c2552b
