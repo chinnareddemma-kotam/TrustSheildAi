@@ -1,0 +1,298 @@
+// TrustShield AI Prisma Database Schema
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+enum Role {
+  CUSTOMER
+  SELLER
+  ADMIN
+}
+
+enum RiskLevel {
+  LOW
+  MEDIUM
+  HIGH
+}
+
+enum Decision {
+  ALLOW
+  REVIEW
+  HOLD
+  BLOCK
+}
+
+enum CaseStatus {
+  Pending
+  Under_Review
+  Investigating
+  Approved
+  Rejected
+  Resolved
+  Escalated
+}
+
+model User {
+  id               String            @id @default(uuid())
+  email            String            @unique
+  passwordHash     String
+  role             Role              @default(CUSTOMER)
+  name             String
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
+  customerProfile  CustomerProfile?
+  sellerProfile    SellerProfile?
+  orders           Order[]
+  reviews          Review[]
+  reports          Notification[]
+  auditLogs        AuditLog[]
+}
+
+model CustomerProfile {
+  id                String   @id @default(uuid())
+  userId            String   @unique
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  verified          Boolean  @default(true)
+  accountAgeDays    Int      @default(180)
+  totalOrders       Int      @default(12)
+  successfulOrders  Int      @default(11)
+  underReviewOrders Int      @default(1)
+  codRefusalRate    Float    @default(0.02)
+  riskScore         Int      @default(12)
+}
+
+model SellerProfile {
+  id                   String               @id @default(uuid())
+  userId               String               @unique
+  user                 User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
+  businessName         String
+  accountHealth        Int                  @default(86)
+  orderDefectRate      Float                @default(1.2)
+  lateDispatchRate     Float                @default(0.7)
+  cancellationRate     Float                @default(0.3)
+  totalListings        Int                  @default(156)
+  activeListings       Int                  @default(142)
+  underReviewListings  Int                  @default(9)
+  rejectedListings     Int                  @default(5)
+  revenueInr           Float                @default(1485000)
+  products             Product[]
+  brandAuthorizations  BrandAuthorization[]
+}
+
+model Product {
+  id                      String                   @id @default(uuid())
+  sellerId                String
+  seller                  SellerProfile            @relation(fields: [sellerId], references: [id])
+  name                    String
+  description             String
+  category                String
+  brand                   String
+  priceInr                Float
+  msrpInr                 Float
+  status                  String                   @default("ACTIVE") // ACTIVE, HELD, REJECTED
+  authenticityScore       Int                      @default(95)
+  riskLevel               RiskLevel                @default(LOW)
+  createdAt               DateTime                 @default(now())
+  images                  ProductImage[]
+  orderItems              OrderItem[]
+  reviews                 Review[]
+  authenticityAssessments AuthenticityAssessment[]
+}
+
+model ProductImage {
+  id         String   @id @default(uuid())
+  productId  String
+  product    Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  url        String
+  isPrimary  Boolean  @default(false)
+}
+
+model Order {
+  id               String           @id @default(uuid())
+  customerId       String
+  customer         User             @relation(fields: [customerId], references: [id])
+  totalAmountInr   Float
+  paymentMethod    String           // COD, UPI, CARD
+  status           String           @default("SAFE") // SAFE, UNDER_REVIEW, BLOCKED
+  riskScore        Int              @default(12)
+  riskLevel        RiskLevel        @default(LOW)
+  createdAt        DateTime         @default(now())
+  items            OrderItem[]
+  payment          Payment?
+  returns          Return[]
+  riskAssessments  RiskAssessment[]
+}
+
+model OrderItem {
+  id        String   @id @default(uuid())
+  orderId   String
+  order     Order    @relation(fields: [orderId], references: [id])
+  productId String
+  product   Product  @relation(fields: [productId], references: [id])
+  quantity  Int
+  priceInr  Float
+}
+
+model Payment {
+  id            String   @id @default(uuid())
+  orderId       String   @unique
+  order         Order    @relation(fields: [orderId], references: [id])
+  method        String
+  status        String   @default("COMPLETED")
+  transactionId String   @unique
+  createdAt     DateTime @default(now())
+}
+
+model Return {
+  id           String   @id @default(uuid())
+  orderId      String
+  order        Order    @relation(fields: [orderId], references: [id])
+  reason       String
+  evidenceUrl  String?
+  status       String   @default("UNDER_REVIEW")
+  riskScore    Int      @default(45)
+  createdAt    DateTime @default(now())
+}
+
+model Review {
+  id                String             @id @default(uuid())
+  productId         String
+  product           Product            @relation(fields: [productId], references: [id])
+  customerId        String
+  customer          User               @relation(fields: [customerId], references: [id])
+  rating            Int
+  comment           String
+  isVerified        Boolean            @default(true)
+  riskScore         Int                @default(10)
+  createdAt         DateTime           @default(now())
+  reviewAssessments ReviewAssessment[]
+}
+
+model RiskAssessment {
+  id                     String    @id @default(uuid())
+  orderId                String
+  order                  Order     @relation(fields: [orderId], references: [id])
+  riskScore              Int
+  riskLevel              RiskLevel
+  decision               Decision
+  reasons                String[]
+  featureContributions   String    // JSON string
+  latencyMs              Int
+  modelType              String
+  createdAt              DateTime  @default(now())
+}
+
+model AuthenticityAssessment {
+  id                    String    @id @default(uuid())
+  productId             String
+  product               Product   @relation(fields: [productId], references: [id])
+  authenticityScore     Int
+  riskLevel             RiskLevel
+  decision              Decision
+  counterfeitProbability Float
+  reasons               String[]
+  logoMatchPercent      Float
+  priceVsMsrpRatio      Float
+  latencyMs             Int
+  modelType             String
+  createdAt             DateTime  @default(now())
+}
+
+model ReviewAssessment {
+  id                   String    @id @default(uuid())
+  reviewId             String
+  review               Review    @relation(fields: [reviewId], references: [id])
+  riskScore            Int
+  riskLevel            RiskLevel
+  decision             Decision
+  aiTextProbability    Float
+  burstVelocity        Int
+  degreeCentrality     Float
+  reasons              String[]
+  latencyMs            Int
+  modelType            String
+  createdAt            DateTime  @default(now())
+}
+
+model FraudCase {
+  id             String     @id @default(uuid())
+  caseNumber     String     @unique
+  type           String
+  entity         String
+  reason         String
+  riskScore      Int
+  status         CaseStatus @default(Under_Review)
+  assignedTo     String
+  agent          String
+  modelType      String
+  explainability String
+  overrideReason String?
+  createdAt      DateTime   @default(now())
+  updatedAt      DateTime   @updatedAt
+}
+
+model Alert {
+  id        String   @id @default(uuid())
+  title     String
+  severity  String   // CRITICAL, HIGH, MEDIUM, LOW
+  entity    String
+  timestamp DateTime @default(now())
+  details   String
+  status    String   @default("ACTIVE")
+}
+
+model AuditLog {
+  id                     String   @id @default(uuid())
+  eventId                String   @unique
+  userId                 String?
+  user                   User?    @relation(fields: [userId], references: [id])
+  dataRegion             String   @default("ap-south-1 (India VPC)")
+  agentName              String
+  actionTaken            String
+  riskScore              Int
+  confidenceScore        Float
+  modelType              String
+  costUsd                Float
+  latencyMs              Int
+  plainLanguageRationale String
+  previousHash           String
+  currentHash            String
+  timestamp              DateTime @default(now())
+}
+
+model Notification {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  title     String
+  message   String
+  type      String
+  read      Boolean  @default(false)
+  createdAt DateTime @default(now())
+}
+
+model BrandAuthorization {
+  id          String        @id @default(uuid())
+  sellerId    String
+  seller      SellerProfile @relation(fields: [sellerId], references: [id])
+  brandName   String
+  documentUrl String
+  status      String        @default("VERIFIED")
+  uploadedAt  DateTime      @default(now())
+}
+
+model AgentExecution {
+  id          String   @id @default(uuid())
+  agentName   String
+  input       String   // JSON string
+  output      String   // JSON string
+  latencyMs   Int
+  costUsd     Float
+  timestamp   DateTime @default(now())
+}
