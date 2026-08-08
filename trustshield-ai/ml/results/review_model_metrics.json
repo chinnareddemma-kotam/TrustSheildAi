@@ -1,0 +1,11 @@
+{
+  "dataset": "OPSPAM",
+  "samples": 40526,
+  "train_samples": 32420,
+  "test_samples": 8106,
+  "accuracy": 0.8897113249444856,
+  "precision": 0.8987150415721844,
+  "recall": 0.8787878787878788,
+  "f1_score": 0.8886397608370703,
+  "roc_auc": 0.9579672769569533
+}

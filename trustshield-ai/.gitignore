@@ -1,0 +1,138 @@
+# ================================
+# Python
+# ================================
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+
+# Virtual environments
+venv/
+.venv/
+env/
+ENV/
+
+# ================================
+# Environment / Secrets
+# ================================
+.env
+.env.*
+!.env.example
+
+# API keys
+*.key
+*.pem
+secrets/
+credentials/
+
+# ================================
+# Datasets
+# ================================
+data/raw/
+data/processed/
+data/interim/
+
+# Large dataset files
+*.csv
+*.xlsx
+*.xls
+*.parquet
+*.zip
+*.tar
+*.gz
+
+# ================================
+# Trained Models
+# ================================
+models/**/*.pkl
+models/**/*.joblib
+models/**/*.pth
+models/**/*.pt
+models/**/*.onnx
+models/**/*.h5
+models/**/*.keras
+
+# Keep model folder structure
+!models/
+!models/**/
+!models/**/.gitkeep
+
+# ================================
+# ML Outputs
+# ================================
+mlruns/
+runs/
+wandb/
+checkpoints/
+logs/
+
+# ================================
+# Jupyter
+# ================================
+.ipynb_checkpoints/
+*.ipynb_checkpoints
+
+# ================================
+# Python tools
+# ================================
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# ================================
+# IDE
+# ================================
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# ================================
+# OS
+# ================================
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ================================
+# Frontend
+# ================================
+node_modules/
+dist/
+build/
+.next/
+.nuxt/
+
+# Frontend environment
+frontend/.env
+frontend/.env.local
+
+# ================================
+# Temporary files
+# ================================
+*.tmp
+*.temp
+*.log
+
+# ================================
+# Generated files
+# ================================
+uploads/
+temp/
+tmp/
+cache/
+
+# ================================
+# Python packaging
+# ================================
+*.egg-info/
+.eggs/
+pip-wheel-metadata/
+
+# ================================
+# Secrets / Local config
+# ================================
+config.local.*
+settings.local.*
